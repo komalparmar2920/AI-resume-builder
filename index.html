@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canva-Inspired Resume Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --accent-color: #e74c3c;
+            --text-color: #2c3e50;
+            --light-gray: #f8f9fa;
+            --border-color: #ddd;
+            --success-color: #2ecc71;
+        }
+
+        body {
+            font-family: 'poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--light-gray);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--text-color);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-backdrop-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .feature i {
+            color: var(--primary-color);
+        }
+
+        form {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: 'poppins', sans-serif;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-top: 40px;
+            margin-bottom: 25px;
+            font-size: 22px;
+            color: var(--text-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+        }
+
+        .help-text {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 6px;
+        }
+
+        /* File upload styling */
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload-label {
+            display: flex;
+            padding: 15px;
+            background: #f5f7fa;
+            border: 2px dashed var(--primary-color);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .file-upload-label:hover {
+            background: #edf7fd;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 30px;
+            color: var(--primary-color);
+        }
+
+        #file-selected {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #7f8c8d;
+            text-align: center;
+        }
+
+        /* Template selection */
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .template-option {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .template-option:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .template-option.selected {
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .template-option.selected::after {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .template-option input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .template-preview {
+            height: 260px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .template-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .template-preview:hover img {
+            transform: scale(1.05);
+        }
+
+        .template-info {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        .template-name {
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 16px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .color-dot {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+        }
+
+        .template-description {
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+
+        /* Color indicator */
+        .submit-btn {
+            display: block;
+            width: 50%;
+            padding: 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 30px auto 0;
+            text-align: center;
+        }
+
+        .submit-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Resume preview modal */
+        #resume-preview-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .resume-preview-content {
+            background-color: white;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .resume-controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .resume-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .close-preview {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #2c3e50;
+            transition: all 0.3s;
+        }
+
+        .close-preview:hover {
+            color: var(--accent-color);
+        }
+
+        .resume-download,
+        .resume-edit {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .resume-download {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .resume-download:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .resume-edit {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            color: var(--text-color);
+        }
+
+        .resume-edit:hover {
+            background-color: #eee;
+        }
+
+        #resume-content {
+            padding: 30px;
+        }
+
+        .error-message {
+            padding: 20px;
+            background-color: #ffebee;
+            color: #c62828;
+            border-radius: 6px;
+            border-left: 4px solid #c62828;
+            margin: 10px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .loading-spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid var(--primary-color);
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .resume-preview-content {
+            background-color: white;
+            width: 100%;
+            max-width: 800px;
+            height: 90vh;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #resume-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        #resume-content iframe {
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Responsive fixes */
+        @media (max-width: 992px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .templates-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+
+            .template-preview {
+                height: 200px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 20px;
+            }
+
+            form {
+                padding: 20px;
+            }
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-header">
+        <h1>Canva-Inspired Resume Generator</h1>
+        <div class="tagline">Create professional resumes in minutes with beautiful templates</div>
+
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-magic"></i>
+                <span>Professional Templates</span>
+            </div>
+            <div class="feature">
+                <i class="fas fa-download"></i>
+                <span>Instant PDF Download</span>
+            </div>
+            <div class="feature">
+                <i class="fas fa-paint-brush"></i>
+                <span>Customizable Designs</span>
+            </div>
+        </div>
+    </div>
+
+    <form id="resume-form" action="/preview" method="post" enctype="multipart/form-data">
+        <div class="section-title">
+            <i class="fas fa-user-circle"></i>
+            Personal Information
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required placeholder="e.g., John Doe">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="e.g., john@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" required placeholder="e.g., +1 555-123-4567">
+            </div>
+
+            <div class="form-group">
+                <label for="photo">Profile Photo (Optional)</label>
+                <div class="file-upload">
+                    <label for="photo" class="file-upload-label">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <span>Upload your professional photo</span>
+                    </label>
+                    <input type="file" id="photo" name="photo" accept="image/*">
+                </div>
+                <div id="file-selected">No file selected</div>
+                <div class="help-text">Recommended: Square image (1:1 ratio), max 2MB</div>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <i class="fas fa-graduation-cap"></i>
+            Education
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="college">College/University Name</label>
+                <input type="text" id="college" name="college" required placeholder="e.g., Stanford University">
+            </div>
+
+            <div class="form-group">
+                <label for="degree">Degree</label>
+                <input type="text" id="degree" name="degree" required placeholder="e.g., Bachelor of Computer Science">
+            </div>
+
+            <div class="form-group">
+                <label for="percentage">Percentage</label>
+                <input type="number" id="percentage" name="percentage" min="0" max="100" step="0.01" required
+                    placeholder="e.g., 85.5">
+            </div>
+
+            <div class="form-group">
+                <label for="cgpa">CGPA</label>
+                <input type="number" id="cgpa" name="cgpa" min="0" max="10" step="0.01" required
+                    placeholder="e.g., 8.5">
+            </div>
+        </div>
+
+        <div class="section-title">
+            <i class="fas fa-laptop-code"></i>
+            Projects
+        </div>
+
+        <div class="form-group full-width">
+            <label for="projects">Projects</label>
+            <textarea id="projects" name="projects"
+                placeholder="Project Name: Description; Another Project: Description"></textarea>
+            <div class="help-text">Separate projects with semicolons (;) and use colon (:) between project name and
+                description</div>
+        </div>
+
+        <div class="section-title">
+            <i class="fas fa-briefcase"></i>
+            Work Experience
+        </div>
+
+        <div class="form-group full-width">
+            <label for="experience">Company Experience</label>
+            <textarea id="experience" name="experience"
+                placeholder="Company & Position: Responsibilities and achievements; Another Company & Position: Details"></textarea>
+            <div class="help-text">Separate different experiences with semicolons (;) and use colon (:) between
+                company/position and details</div>
+        </div>
+
+        <div class="section-title">
+            <i class="fas fa-paint-brush"></i>
+            Template Selection
+        </div>
+
+        <div class="templates-grid">
+            <div class="template-option" onclick="selectTemplate(this, 'modern_minimal')">
+                <input type="radio" name="template" value="modern_minimal" checked>
+                <div class="template-preview">
+                    <img src="/static/uploads/modern_minimal.png" alt="Modern Template Preview"
+                        onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22280%22%20viewBox%3D%220%200%20400%20280%22%20preserveAspectRatio%3D%22none%22%3E%3Crect%20width%3D%22400%22%20height%3D%22280%22%20style%3D%22fill%3A%232E5090%3B%22%2F%3E%3Ctext%20x%3D%22200%22%20y%3D%22140%22%20style%3D%22fill%3A%23ffffff%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20sans-serif%3Bfont-size%3A20px%3Bdominant-baseline%3Amiddle%3Btext-anchor%3Amiddle%3B%22%3EModern%20Minimal%3C%2Ftext%3E%3C%2Fsvg%3E'">
+                </div>
+                <div class="template-info">
+                    <div class="template-name">
+                        Modern Professional
+                        <span class="color-dot" style="background-color: #2E5090;"></span>
+                    </div>
+                    <div class="template-description">Clean sidebar layout with subtle accent colors</div>
+                </div>
+            </div>
+            <div class="template-option" onclick="selectTemplate(this, 'bold_creative')">
+                <input type="radio" name="template" value="bold_creative">
+                <div class="template-preview">
+                    <img src="/static/uploads/bold_creative.png" alt="Creative Template Preview"
+                        onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22280%22%20viewBox%3D%220%200%20400%20280%22%20preserveAspectRatio%3D%22none%22%3E%3Crect%20width%3D%22400%22%20height%3D%22280%22%20style%3D%22fill%3A%23D92B2B%3B%22%2F%3E%3Ctext%20x%3D%22200%22%20y%3D%22140%22%20style%3D%22fill%3A%23ffffff%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20sans-serif%3Bfont-size%3A20px%3Bdominant-baseline%3Amiddle%3Btext-anchor%3Amiddle%3B%22%3EBold%20Creative%3C%2Ftext%3E%3C%2Fsvg%3E'">
+                </div>
+                <div class="template-info">
+                    <div class="template-name">
+                        Creative Design
+                        <span class="color-dot" style="background-color: #D92B2B;"></span>
+                    </div>
+                    <div class="template-description">Bold and artistic layout</div>
+                </div>
+            </div>
+            <div class="template-option" onclick="selectTemplate(this, 'elegant_pro')">
+                <input type="radio" name="template" value="elegant_pro">
+                <div class="template-preview">
+                    <img src="/static/uploads/elegant_pro.png" alt="Elegant Template Preview"
+                        onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22280%22%20viewBox%3D%220%200%20400%20280%22%20preserveAspectRatio%3D%22none%22%3E%3Crect%20width%3D%22400%22%20height%3D%22280%22%20style%3D%22fill%3A%232B7D6A%3B%22%2F%3E%3Ctext%20x%3D%22200%22%20y%3D%22140%22%20style%3D%22fill%3A%23ffffff%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20sans-serif%3Bfont-size%3A20px%3Bdominant-baseline%3Amiddle%3Btext-anchor%3Amiddle%3B%22%3EElegant%20Professional%3C%2Ftext%3E%3C%2Fsvg%3E'">
+                </div>
+                <div class="template-info">
+                    <div class="template-name">
+                        Elegant Professional
+                        <span class="color-dot" style="background-color: #2B7D6A;"></span>
+                    </div>
+                    <div class="template-description">Sophisticated and refined style</div>
+                </div>
+            </div>
+            <div class="template-option" onclick="selectTemplate(this, 'tech_modern')">
+                <input type="radio" name="template" value="tech_modern">
+                <div class="template-preview">
+                    <img src="/static/uploads/tech_modern.png" alt="Tech Template Preview"
+                        onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22280%22%20viewBox%3D%220%200%20400%20280%22%20preserveAspectRatio%3D%22none%22%3E%3Crect%20width%3D%22400%22%20height%3D%22280%22%20style%3D%22fill%3A%23333333%3B%22%2F%3E%3Ctext%20x%3D%22200%22%20y%3D%22140%22%20style%3D%22fill%3A%23ffffff%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20sans-serif%3Bfont-size%3A20px%3Bdominant-baseline%3Amiddle%3Btext-anchor%3Amiddle%3B%22%3ETech%20Modern%3C%2Ftext%3E%3C%2Fsvg%3E'">
+                </div>
+                <div class="template-info">
+                    <div class="template-name">
+                        Tech Modern
+                        <span class="color-dot" style="background-color: #333333;"></span>
+                    </div>
+                    <div class="template-description">Clean and modern tech-inspired layout</div>
+                </div>
+            </div>
+            <div class="template-option" onclick="selectTemplate(this, 'creative_colorful')">
+                <input type="radio" name="template" value="creative_colorful">
+                <div class="template-preview">
+                    <img src="/static/uploads/creative_colorful.png" alt="Creative Colorful Template"
+                        onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22280%22%20viewBox%3D%220%200%20400%20280%22%20preserveAspectRatio%3D%22none%22%3E%3Crect%20width%3D%22400%22%20height%3D%22280%22%20style%3D%22fill%3A%238C52FF%3B%22%2F%3E%3Ctext%20x%3D%22200%22%20y%3D%22140%22%20style%3D%22fill%3A%23ffffff%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20sans-serif%3Bfont-size%3A20px%3Bdominant-baseline%3Amiddle%3Btext-anchor%3Amiddle%3B%22%3ECreative%20Colorful%3C%2Ftext%3E%3C%2Fsvg%3E'">
+                </div>
+                <div class="template-info">
+                    <div class="template-name">
+                        creative colorful
+                        <span class="color-dot" style="background-color: #885ad8;"></span>
+                    </div>
+                    <div class="template-description">Clean and modern tech-inspired layout</div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="submit-btn" onclick="generateResume()">Generate Resume</button>
+
+    </form>
+
+    <div id="resume-preview-container">
+        <div class="resume-preview-content">
+            <div class="resume-controls">
+                <button class="close-preview" onclick="closePreview()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="resume-actions">
+                    <button class="resume-edit" onclick="closePreview()">
+                        <i class="fas fa-pen"></i>
+                        Edit Resume
+                    </button>
+                    <button class="resume-download" onclick="downloadResume()">
+                        <i class="fas fa-download"></i>
+                        Download PDF
+                    </button>
+                </div>
+            </div>
+            <div id="resume-content"></div>
+        </div>
+    </div>
+
+
+    <script>
+        // Handle file selection display
+        document.getElementById('photo').addEventListener('change', function (e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file selected';
+            document.getElementById('file-selected').textContent = fileName;
+        });
+
+        function selectTemplate(element, templateId) {
+            // Remove selected class from all options
+            document.querySelectorAll('.template-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            // Add selected class to clicked option
+            element.classList.add('selected');
+
+            // Check the radio button
+            element.querySelector('input[type="radio"]').checked = true;
+        }
+
+        // Set the first template as selected initially
+        document.addEventListener('DOMContentLoaded', function () {
+            const firstTemplate = document.querySelector('.template-option');
+            if (firstTemplate) {
+                firstTemplate.classList.add('selected');
+            }
+        });
+
+        function generateResume() {
+            // Validate form
+            const form = document.getElementById('resume-form');
+            const inputs = form.querySelectorAll('input[required], textarea[required]');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    input.style.borderColor = '#ddd';
+                }
+            });
+
+            if (!isValid) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            document.getElementById('resume-content').innerHTML = '<div class="loading-spinner"></div>';
+            document.getElementById('resume-preview-container').style.display = 'flex';
+
+            const formData = new FormData(form);
+
+            fetch('/generate_preview', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('resume-content').innerHTML =
+                            `<iframe src="${data.pdf_url}" width="100%" height="800%" frameborder="0"></iframe>`;
+                    } else {
+                        document.getElementById('resume-content').innerHTML =
+                            `<div class="error-message">Error generating resume: ${data.error}</div>`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('resume-content').innerHTML =
+                        `<div class="error-message">Error : ${error.message}</div>`;
+                });
+        }
+
+        function closePreview() {
+            document.getElementById('resume-preview-container').style.display = 'none';
+        }
+
+        function downloadResume() {
+            window.location.href = '/download';
+        }
+    </script>
+</body>
+
+</html>
